@@ -16,7 +16,6 @@ spec:
 
 def buildNumber = env.BUILD_NUMBER
 
-
 properties([
     parameters([
         choice(choices: ['dev', 'qa', 'stage', 'prod'], description: 'Pick environment', name: 'region')
@@ -35,9 +34,11 @@ else if (params.region == "stage") {
     region = "us-west-1"
 }
 
-else   {
+else {
     region = "us-west-2"
 }
+
+
 podTemplate(cloud: 'kubernetes', label: 'packer', yaml: template) {
     node("packer") {
         container("packer") {
@@ -49,10 +50,10 @@ podTemplate(cloud: 'kubernetes', label: 'packer', yaml: template) {
             }
             
             stage("Packer build") {
-                sh "packer build  -var jenkins_build_number=${buildNumber} packer.pkr.hcl"
+                sh "packer build -var jenkins_build_number=${buildNumber} packer.pkr.hcl"
             }
         }
     }
 }
-}
+    }
 }
